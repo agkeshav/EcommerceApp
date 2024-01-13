@@ -17,17 +17,17 @@ import Slider from "../components/Slider";
 import ProductItem from "../components/ProductItem";
 import axios from "axios";
 import api from "../api/api";
-import  {
-  BottomModal,
-  ModalContent,
-  SlideAnimation,
-} from "react-native-modals";
+import { BottomModal, ModalContent, SlideAnimation } from "react-native-modals";
 import AddressModalCard from "../components/AddressModalCard";
 import { useNavigation } from "@react-navigation/native";
 import { Context as UserContext } from "../context/UserContext";
 
 export default function HomeScreen() {
-  const { state,updateUserId } = useContext(UserContext);
+  const {
+    state: { defaultAddress },
+    updateUserId,
+    updateDefaultAddress,
+  } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchProduct, setSearchProduct] = useState();
   const [loading, setLoading] = useState(true);
@@ -68,14 +68,12 @@ export default function HomeScreen() {
       name: "Fashion",
     },
   ];
-  
+
   const [products, setProducts] = useState([]);
   const getProduct = async () => {
     try {
       const response = await api.get("/products");
-      // console.log(response);
       setProducts(response.data.msg);
-      // console.log(response.data.msg);
     } catch (err) {
       console.log(err);
     }
@@ -89,6 +87,9 @@ export default function HomeScreen() {
       updateUserId(userId);
       const addressResponse = await api.get(`/addresses/${userId}`);
       setAddresses(addressResponse.data.msg);
+      if (Object.keys(defaultAddress).length === 0 && addresses.length > 0) {
+        updateDefaultAddress(addresses[0]);
+      }
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -102,8 +103,7 @@ export default function HomeScreen() {
     getProduct();
     setLoading(false);
   }, []);
-  // console.log(state);
-  
+  console.log(defaultAddress);
   return (
     <>
       <StatusBar backgroundColor={"#92DEDA"} />
@@ -160,7 +160,8 @@ export default function HomeScreen() {
             style={{ paddingRight: 5 }}
           />
           <Text style={{ fontSize: 13, marginRight: 5 }}>
-            Delivering to Delhi 110008 - Update Location
+            Delivering to {defaultAddress?.city} {defaultAddress?.postalCode} -
+            Update Location
           </Text>
           <AntDesign
             name="down"
@@ -229,8 +230,8 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ flexGrow: 1 }}
           >
-            {addresses.map((item,index) => {
-              return <AddressModalCard item={item} key={index}/>;
+            {addresses.map((item, index) => {
+              return <AddressModalCard item={item} key={index} />;
             })}
             <View
               style={{

@@ -152,7 +152,7 @@ export default function OrderScreen() {
             }}
           >
             <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-              Shiping to {selectedAddress?.name}
+              Shipping to {selectedAddress?.name}
             </Text>
             <Text style={{ fontWeight: 500, fontSize: 15 }}>Items</Text>
             {cart.map((item) => (

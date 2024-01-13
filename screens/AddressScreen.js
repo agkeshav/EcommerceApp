@@ -18,6 +18,7 @@ import { Context as UserContext } from "../context/UserContext";
 export default function AddressScreen() {
   const {
     state: { userId },
+    updateDefaultAddress,
   } = useContext(UserContext);
   const navigation = useNavigation();
   const [searchProduct, setSearchProduct] = useState();
@@ -199,6 +200,13 @@ export default function AddressScreen() {
                   borderRadius: 5,
                   borderWidth: 0.9,
                   borderColor: "#D0D0D0",
+                }}
+                onPress={() => {
+                  updateDefaultAddress(item);
+                  ToastAndroid.show(
+                    "Default Address set successfully",
+                    ToastAndroid.SHORT
+                  );
                 }}
               >
                 <Text>Set as Default</Text>
